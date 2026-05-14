@@ -6,74 +6,122 @@ import { GenerateVisualizationBody, GetVisualizationParams } from "@workspace/ap
 
 const router = Router();
 
-/**
- * Generates a simple SVG house image encoded as a base64 data URL.
- * This serves as a placeholder when no AI service is configured.
- */
-function generateHouseSvg(params: {
-  prompt: string;
+const UNSPLASH_BASE = "https://images.unsplash.com/photo-";
+const Q = "?auto=format&fit=crop&w=900&q=85";
+
+const HOUSE_IMAGES: Record<string, string[]> = {
+  Modern: [
+    `${UNSPLASH_BASE}1600596542815-ffad4c1539a9${Q}`,
+    `${UNSPLASH_BASE}1600585154340-be6161a56a0c${Q}`,
+    `${UNSPLASH_BASE}1564013799919-ab600027ffc6${Q}`,
+    `${UNSPLASH_BASE}1583608205776-bfd35f0d9f83${Q}`,
+    `${UNSPLASH_BASE}1600047509807-ba8f99d2cdde${Q}`,
+    `${UNSPLASH_BASE}1600607687920-4e2a09cf159d${Q}`,
+  ],
+  Contemporary: [
+    `${UNSPLASH_BASE}1600566753086-00f18fb6b3ea${Q}`,
+    `${UNSPLASH_BASE}1605276374104-dee2a0ed3cd6${Q}`,
+    `${UNSPLASH_BASE}1512917774080-9991f1c4c750${Q}`,
+    `${UNSPLASH_BASE}1600596542815-ffad4c1539a9${Q}`,
+    `${UNSPLASH_BASE}1600585154340-be6161a56a0c${Q}`,
+  ],
+  Colonial: [
+    `${UNSPLASH_BASE}1568605114967-8130f3a36994${Q}`,
+    `${UNSPLASH_BASE}1570129477492-45c003edd2be${Q}`,
+    `${UNSPLASH_BASE}1512917774080-9991f1c4c750${Q}`,
+    `${UNSPLASH_BASE}1558036117-56df72e659c4${Q}`,
+    `${UNSPLASH_BASE}1523217582562-09d0def993a6${Q}`,
+  ],
+  Mediterranean: [
+    `${UNSPLASH_BASE}1577495508048-b635879837f1${Q}`,
+    `${UNSPLASH_BASE}1523217582562-09d0def993a6${Q}`,
+    `${UNSPLASH_BASE}1499793983690-e29da59ef1c2${Q}`,
+    `${UNSPLASH_BASE}1564501049412-61d2ad2d6cf2${Q}`,
+    `${UNSPLASH_BASE}1600596542815-ffad4c1539a9${Q}`,
+  ],
+  Victorian: [
+    `${UNSPLASH_BASE}1558618666-fcd25c85cd64${Q}`,
+    `${UNSPLASH_BASE}1568605114967-8130f3a36994${Q}`,
+    `${UNSPLASH_BASE}1570129477492-45c003edd2be${Q}`,
+    `${UNSPLASH_BASE}1512917774080-9991f1c4c750${Q}`,
+  ],
+  Minimalist: [
+    `${UNSPLASH_BASE}1600210492493-0946041159a3${Q}`,
+    `${UNSPLASH_BASE}1600566753086-00f18fb6b3ea${Q}`,
+    `${UNSPLASH_BASE}1600585154340-be6161a56a0c${Q}`,
+    `${UNSPLASH_BASE}1605276374104-dee2a0ed3cd6${Q}`,
+    `${UNSPLASH_BASE}1583608205776-bfd35f0d9f83${Q}`,
+  ],
+  Craftsman: [
+    `${UNSPLASH_BASE}1575517111839-3a3843ee7f5d${Q}`,
+    `${UNSPLASH_BASE}1568605114967-8130f3a36994${Q}`,
+    `${UNSPLASH_BASE}1558036117-56df72e659c4${Q}`,
+    `${UNSPLASH_BASE}1570129477492-45c003edd2be${Q}`,
+  ],
+  "Art Deco": [
+    `${UNSPLASH_BASE}1513694203232-719a899d4631${Q}`,
+    `${UNSPLASH_BASE}1600566753086-00f18fb6b3ea${Q}`,
+    `${UNSPLASH_BASE}1564013799919-ab600027ffc6${Q}`,
+  ],
+  Waterfront: [
+    `${UNSPLASH_BASE}1505916349660-8621ece2bf6f${Q}`,
+    `${UNSPLASH_BASE}1499793983690-e29da59ef1c2${Q}`,
+    `${UNSPLASH_BASE}1416339442236-8ceb164046f8${Q}`,
+  ],
+  Mountain: [
+    `${UNSPLASH_BASE}1518780664697-55e3ad937233${Q}`,
+    `${UNSPLASH_BASE}1501854140801-50d01698950b${Q}`,
+    `${UNSPLASH_BASE}1564501049412-61d2ad2d6cf2${Q}`,
+  ],
+  Countryside: [
+    `${UNSPLASH_BASE}1564501049412-61d2ad2d6cf2${Q}`,
+    `${UNSPLASH_BASE}1500382017468-9049fed747ef${Q}`,
+    `${UNSPLASH_BASE}1558036117-56df72e659c4${Q}`,
+  ],
+  Garden: [
+    `${UNSPLASH_BASE}1558618047-3b5be5fdb4c2${Q}`,
+    `${UNSPLASH_BASE}1416339442236-8ceb164046f8${Q}`,
+    `${UNSPLASH_BASE}1575517111839-3a3843ee7f5d${Q}`,
+  ],
+  default: [
+    `${UNSPLASH_BASE}1600596542815-ffad4c1539a9${Q}`,
+    `${UNSPLASH_BASE}1568605114967-8130f3a36994${Q}`,
+    `${UNSPLASH_BASE}1570129477492-45c003edd2be${Q}`,
+    `${UNSPLASH_BASE}1564013799919-ab600027ffc6${Q}`,
+    `${UNSPLASH_BASE}1583608205776-bfd35f0d9f83${Q}`,
+    `${UNSPLASH_BASE}1600585154340-be6161a56a0c${Q}`,
+  ],
+};
+
+function pickImages(params: {
   style?: string | null;
-  bedrooms?: number | null;
-  exteriorColor?: string | null;
   surroundings?: string | null;
-}): string {
-  const COLOR_MAP: Record<string, string> = {
-    White: "#f5f0ea", Beige: "#e8dcc8", Grey: "#c8c4bc", Blue: "#a8c4e0",
-    Green: "#a8d0a8", Terracotta: "#d4886a", Cream: "#f2e8d0", Sand: "#d8c898",
-  };
-  const wallColor  = COLOR_MAP[params.exteriorColor ?? ""] ?? "#e8dcc8";
-  const roofColor  = "#6b5545";
-  const beds       = params.bedrooms ?? 3;
-  const windowCount = Math.min(8, Math.max(2, beds + 1));
+  bedrooms?: number | null;
+}): string[] {
+  const pool: string[] = [];
 
-  const W = 400, H = 300;
-  const houseW = 220, houseH = 110;
-  const houseX = (W - houseW) / 2;
-  const groundY = H - 60;
-  const eaveY   = groundY - houseH;
-  const ridgeY  = eaveY - 70;
-  const ridgeX  = houseX + houseW / 2;
-  const doorW = 30, doorH = 55;
-  const doorX = ridgeX - doorW / 2;
-  const doorY = groundY - doorH;
-
-  const windowSvgs: string[] = [];
-  const winSize = 22;
-  const winY = eaveY + 20;
-  const spacing = houseW / (windowCount + 1);
-  for (let i = 0; i < windowCount; i++) {
-    const wx = houseX + spacing * (i + 1) - winSize / 2;
-    if (wx > doorX - winSize - 2 && wx < doorX + doorW + 2) continue;
-    windowSvgs.push(`
-      <rect x="${wx}" y="${winY}" width="${winSize}" height="${winSize}" fill="#bfdbfe" stroke="#6b5545" stroke-width="1.5" rx="1"/>
-      <line x1="${wx + winSize/2}" y1="${winY}" x2="${wx + winSize/2}" y2="${winY + winSize}" stroke="#6b5545" stroke-width="1"/>
-      <line x1="${wx}" y1="${winY + winSize/2}" x2="${wx + winSize}" y2="${winY + winSize/2}" stroke="#6b5545" stroke-width="1"/>
-    `);
+  if (params.style && HOUSE_IMAGES[params.style]) {
+    pool.push(...HOUSE_IMAGES[params.style]);
   }
 
-  const styleLabel = params.style ? `${params.style} Style` : "Dream Home";
-  const bedsLabel  = beds ? `${beds} Bedroom` : "";
+  const surroundingKey = params.surroundings?.toLowerCase();
+  if (surroundingKey?.includes("waterfront") || surroundingKey?.includes("water")) {
+    pool.push(...HOUSE_IMAGES["Waterfront"]);
+  } else if (surroundingKey?.includes("mountain")) {
+    pool.push(...HOUSE_IMAGES["Mountain"]);
+  } else if (surroundingKey?.includes("countryside") || surroundingKey?.includes("country")) {
+    pool.push(...HOUSE_IMAGES["Countryside"]);
+  } else if (surroundingKey?.includes("garden")) {
+    pool.push(...HOUSE_IMAGES["Garden"]);
+  }
 
-  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}">
-    <defs>
-      <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0%" stop-color="#dbeafe"/>
-        <stop offset="100%" stop-color="#fef3c7"/>
-      </linearGradient>
-    </defs>
-    <rect width="${W}" height="${groundY}" fill="url(#sky)"/>
-    <rect y="${groundY}" width="${W}" height="${H - groundY}" fill="#86c556"/>
-    <circle cx="${W - 50}" cy="45" r="22" fill="#fbbf24" opacity="0.85"/>
-    <polygon points="${houseX},${eaveY} ${houseX + houseW},${eaveY} ${ridgeX},${ridgeY}" fill="${roofColor}" stroke="#3a2518" stroke-width="2"/>
-    <rect x="${houseX}" y="${eaveY}" width="${houseW}" height="${houseH}" fill="${wallColor}" stroke="#c9b8a4" stroke-width="1.5"/>
-    ${windowSvgs.join("")}
-    <rect x="${doorX}" y="${doorY}" width="${doorW}" height="${doorH}" fill="#7c5c4a" stroke="#5a3e2b" stroke-width="1.5" rx="2"/>
-    <circle cx="${doorX + doorW * 0.75}" cy="${doorY + doorH * 0.55}" r="3" fill="#f59e0b"/>
-    <text x="${W/2}" y="${H - 18}" text-anchor="middle" font-size="11" font-weight="600" fill="#6b5545" font-family="Georgia,serif">${styleLabel}${bedsLabel ? " · " + bedsLabel : ""}</text>
-    <text x="${W/2}" y="${H - 5}" text-anchor="middle" font-size="9" fill="#9a8070" font-family="sans-serif">${params.prompt.slice(0, 60)}${params.prompt.length > 60 ? "…" : ""}</text>
-  </svg>`;
+  if (pool.length === 0) {
+    pool.push(...HOUSE_IMAGES["default"]);
+  }
 
-  return Buffer.from(svg).toString("base64");
+  const unique = [...new Set(pool)];
+  const shuffled = unique.sort(() => Math.random() - 0.5);
+  return shuffled.slice(0, 6);
 }
 
 // POST /api/visualizations
@@ -83,15 +131,14 @@ router.post("/visualizations", async (req, res) => {
     if (!parse.success) return res.status(400).json({ error: parse.error.flatten() });
 
     const d = parse.data;
-    const svgBase64 = generateHouseSvg({
-      prompt:        d.prompt,
-      style:         d.style ?? null,
-      bedrooms:      d.bedrooms ?? null,
-      exteriorColor: d.exteriorColor ?? null,
-      surroundings:  d.surroundings ?? null,
+    const images = pickImages({
+      style: d.style ?? null,
+      surroundings: d.surroundings ?? null,
+      bedrooms: d.bedrooms ?? null,
     });
-    // Store full data URL so the frontend can use it directly as <img src>
-    const imageBase64 = `data:image/svg+xml;base64,${svgBase64}`;
+
+    // Store JSON array of image URLs in the imageBase64 column
+    const imageBase64 = JSON.stringify(images);
 
     const [row] = await db.insert(visualizationsTable).values({
       prompt:        d.prompt,
