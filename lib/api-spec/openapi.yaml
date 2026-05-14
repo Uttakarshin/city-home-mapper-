@@ -3,20 +3,28 @@ info:
   # Do not change the title, if the title changes, the import paths will be broken
   title: Api
   version: 0.1.0
-  description: API specification
+  description: PriceWise Homes API
 servers:
   - url: /api
     description: Base API path
 tags:
   - name: health
     description: Health operations
+  - name: properties
+    description: Property listings
+  - name: favorites
+    description: User favorites
+  - name: visualizations
+    description: AI house visualizations
+  - name: stats
+    description: Market statistics
+
 paths:
   /healthz:
     get:
       operationId: healthCheck
       tags: [health]
       summary: Health check
-      description: Returns server health status
       responses:
         "200":
           description: Healthy
@@ -24,6 +32,259 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+
+  /properties:
+    get:
+      operationId: listProperties
+      tags: [properties]
+      summary: List all properties with optional filters
+      parameters:
+        - name: city
+          in: query
+          schema:
+            type: string
+        - name: minPrice
+          in: query
+          schema:
+            type: number
+        - name: maxPrice
+          in: query
+          schema:
+            type: number
+        - name: bedrooms
+          in: query
+          schema:
+            type: integer
+        - name: bathrooms
+          in: query
+          schema:
+            type: number
+        - name: propertyType
+          in: query
+          schema:
+            type: string
+        - name: lat
+          in: query
+          schema:
+            type: number
+        - name: lng
+          in: query
+          schema:
+            type: number
+        - name: radiusKm
+          in: query
+          schema:
+            type: number
+      responses:
+        "200":
+          description: List of properties
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Property"
+    post:
+      operationId: createProperty
+      tags: [properties]
+      summary: Create a new property listing
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PropertyInput"
+      responses:
+        "201":
+          description: Created property
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Property"
+
+  /properties/stats:
+    get:
+      operationId: getPropertyStats
+      tags: [stats]
+      summary: Get market statistics
+      responses:
+        "200":
+          description: Market stats
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PropertyStats"
+
+  /properties/featured:
+    get:
+      operationId: getFeaturedProperties
+      tags: [properties]
+      summary: Get featured/top properties
+      responses:
+        "200":
+          description: Featured properties
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Property"
+
+  /properties/{id}:
+    get:
+      operationId: getProperty
+      tags: [properties]
+      summary: Get a single property
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Property
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Property"
+        "404":
+          description: Not found
+    patch:
+      operationId: updateProperty
+      tags: [properties]
+      summary: Update a property
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PropertyUpdate"
+      responses:
+        "200":
+          description: Updated property
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Property"
+    delete:
+      operationId: deleteProperty
+      tags: [properties]
+      summary: Delete a property
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+
+  /favorites:
+    get:
+      operationId: listFavorites
+      tags: [favorites]
+      summary: List favorited properties
+      responses:
+        "200":
+          description: Favorited properties
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Property"
+
+  /favorites/{propertyId}:
+    post:
+      operationId: addFavorite
+      tags: [favorites]
+      summary: Add property to favorites
+      parameters:
+        - name: propertyId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "201":
+          description: Added
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Favorite"
+    delete:
+      operationId: removeFavorite
+      tags: [favorites]
+      summary: Remove from favorites
+      parameters:
+        - name: propertyId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Removed
+
+  /visualizations:
+    post:
+      operationId: generateVisualization
+      tags: [visualizations]
+      summary: Generate AI house visualization from description
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/VisualizationInput"
+      responses:
+        "201":
+          description: Generated visualization
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Visualization"
+    get:
+      operationId: listVisualizations
+      tags: [visualizations]
+      summary: List all generated visualizations
+      responses:
+        "200":
+          description: Visualizations
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Visualization"
+
+  /visualizations/{id}:
+    get:
+      operationId: getVisualization
+      tags: [visualizations]
+      summary: Get a single visualization
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Visualization
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Visualization"
+
 components:
   schemas:
     HealthStatus:
@@ -34,3 +295,216 @@ components:
       required:
         - status
 
+    Property:
+      type: object
+      required: [id, title, price, address, city, state, bedrooms, bathrooms, sqft, propertyType, lat, lng, createdAt]
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        description:
+          type: ["string", "null"]
+        price:
+          type: number
+        address:
+          type: string
+        city:
+          type: string
+        state:
+          type: string
+        zipCode:
+          type: string
+        bedrooms:
+          type: integer
+        bathrooms:
+          type: number
+        sqft:
+          type: integer
+        propertyType:
+          type: string
+          description: "house, condo, townhouse, apartment"
+        yearBuilt:
+          type: ["integer", "null"]
+        lat:
+          type: number
+        lng:
+          type: number
+        imageUrl:
+          type: ["string", "null"]
+        isFeatured:
+          type: boolean
+        isFavorited:
+          type: boolean
+        createdAt:
+          type: string
+
+    PropertyInput:
+      type: object
+      required: [title, price, address, city, state, bedrooms, bathrooms, sqft, propertyType, lat, lng]
+      properties:
+        title:
+          type: string
+        description:
+          type: string
+        price:
+          type: number
+        address:
+          type: string
+        city:
+          type: string
+        state:
+          type: string
+        zipCode:
+          type: string
+        bedrooms:
+          type: integer
+        bathrooms:
+          type: number
+        sqft:
+          type: integer
+        propertyType:
+          type: string
+        yearBuilt:
+          type: integer
+        lat:
+          type: number
+        lng:
+          type: number
+        imageUrl:
+          type: string
+        isFeatured:
+          type: boolean
+
+    PropertyUpdate:
+      type: object
+      properties:
+        title:
+          type: string
+        description:
+          type: string
+        price:
+          type: number
+        address:
+          type: string
+        city:
+          type: string
+        state:
+          type: string
+        zipCode:
+          type: string
+        bedrooms:
+          type: integer
+        bathrooms:
+          type: number
+        sqft:
+          type: integer
+        propertyType:
+          type: string
+        yearBuilt:
+          type: integer
+        lat:
+          type: number
+        lng:
+          type: number
+        imageUrl:
+          type: string
+        isFeatured:
+          type: boolean
+
+    PropertyStats:
+      type: object
+      required: [totalListings, avgPrice, avgSqft, cityBreakdown, typeBreakdown, priceRanges]
+      properties:
+        totalListings:
+          type: integer
+        avgPrice:
+          type: number
+        avgSqft:
+          type: number
+        cityBreakdown:
+          type: array
+          items:
+            type: object
+            required: [city, count, avgPrice]
+            properties:
+              city:
+                type: string
+              count:
+                type: integer
+              avgPrice:
+                type: number
+        typeBreakdown:
+          type: array
+          items:
+            type: object
+            required: [type, count]
+            properties:
+              type:
+                type: string
+              count:
+                type: integer
+        priceRanges:
+          type: array
+          items:
+            type: object
+            required: [range, count]
+            properties:
+              range:
+                type: string
+              count:
+                type: integer
+
+    Favorite:
+      type: object
+      required: [id, propertyId, createdAt]
+      properties:
+        id:
+          type: integer
+        propertyId:
+          type: integer
+        createdAt:
+          type: string
+
+    VisualizationInput:
+      type: object
+      required: [prompt]
+      properties:
+        prompt:
+          type: string
+          description: "Natural language description of the dream home"
+        style:
+          type: string
+        bedrooms:
+          type: integer
+        bathrooms:
+          type: number
+        stories:
+          type: integer
+        exteriorColor:
+          type: string
+        surroundings:
+          type: string
+        propertyId:
+          type: ["integer", "null"]
+
+    Visualization:
+      type: object
+      required: [id, prompt, imageBase64, createdAt]
+      properties:
+        id:
+          type: integer
+        prompt:
+          type: string
+        style:
+          type: ["string", "null"]
+        bedrooms:
+          type: ["integer", "null"]
+        bathrooms:
+          type: ["number", "null"]
+        imageBase64:
+          type: string
+        propertyId:
+          type: ["integer", "null"]
+        createdAt:
+          type: string

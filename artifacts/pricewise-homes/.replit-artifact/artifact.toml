@@ -1,0 +1,31 @@
+kind = "web"
+previewPath = "/"
+title = "PriceWise Homes"
+version = "1.0.0"
+id = "artifacts/pricewise-homes"
+router = "path"
+
+[[integratedSkills]]
+name = "react-vite"
+version = "1.0.0"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 25543
+
+[services.development]
+run = "pnpm --filter @workspace/pricewise-homes run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/pricewise-homes", "run", "build" ]
+publicDir = "artifacts/pricewise-homes/dist/public"
+serve = "static"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "25543"
+BASE_PATH = "/"
