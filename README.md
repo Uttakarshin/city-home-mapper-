@@ -1,109 +1,188 @@
-# City Home Mapper
 
-An interactive real-estate and location-based web application designed to help users explore, map, and manage city home listings efficiently. The project provides an intuitive interface for viewing properties, navigating locations, and analyzing housing information using modern web technologies.
 
----
+# 🏙️ City Home Mapper
 
-## 🚀 Features
-
-* 🏠 Property listing and home mapping
-* 📍 Interactive map integration
-* 🔍 Search and filtering functionality
-* 📊 User-friendly dashboard and UI
-* 🌐 Responsive web design
-* ⚡ Fast and scalable frontend architecture
-* 🔐 Secure application structure
-* 📂 Organized project structure for scalability
+A modern AI-powered real estate and property mapping platform built using React, TypeScript, Vite, and interactive mapping technologies. The application helps users explore city homes, visualize locations on maps, and discover property insights through an intuitive and responsive user experience.
 
 ---
 
-## 🛠️ Technologies Used
+# ✨ Overview
 
-### Frontend
+City Home Mapper is a full-stack web application designed for modern property exploration and smart location visualization. The project combines interactive maps, responsive UI components, advanced frontend architecture, and scalable development practices to provide users with a seamless property browsing experience.
 
-* HTML5
-* CSS3
-* JavaScript
-* TypeScript
+The platform focuses on delivering:
+
+* Real-time property visualization
+* Interactive location-based exploration
+* Responsive modern UI/UX
+* Fast frontend rendering with Vite
+* Scalable React component architecture
+* AI-ready integration support
+
+---
+
+# 🚀 Features
+
+## 🏠 Property Exploration
+
+* Browse and explore home/property listings
+* View location-based property information
+* Interactive home discovery interface
+
+## 🗺️ Interactive Mapping
+
+* Leaflet.js map integration
+* Dynamic map rendering
+* Property visualization with map markers
+* Responsive geographic navigation
+
+## 🎨 Modern User Interface
+
+* Fully responsive design
+* Smooth animations with Framer Motion
+* Modern component-based architecture
+* Mobile-friendly layout
+* Clean dashboard and navigation system
+
+## ⚡ Performance Optimized
+
+* Fast Vite-powered frontend
+* TypeScript support for scalability
+* Modular reusable components
+* Optimized React rendering
+
+## 🔐 Scalable Architecture
+
+* Organized project structure
+* API-ready backend integration
+* Reusable UI utilities
+* Future cloud scalability support
+
+---
+
+# 🛠️ Tech Stack
+
+## Frontend Technologies
+
 * React.js
+* TypeScript
+* Vite
 * Tailwind CSS
+* Wouter (Routing)
+* Framer Motion
+* Recharts
 
-### Backend / APIs
+## UI Libraries & Components
 
-* Node.js
-* REST APIs
+* Radix UI
+* Lucide React Icons
+* Sonner Notifications
+* React Hook Form
+* Zod Validation
 
-### Tools & Platforms
+## Maps & Visualization
 
+* Leaflet.js
+* React Leaflet
+
+## Development Tools
+
+* pnpm Workspace
 * Git & GitHub
 * VS Code
-* npm
+* TypeScript Compiler
+* Prettier
 
-### AI / Integrations
+## APIs & Backend Support
 
-* OpenAI Integrations
-* Gemini AI Integrations
-* Anthropic AI Integrations
+* REST API Integration
+* React Query
+* API Client Architecture
 
 ---
 
-## 📁 Project Structure
+# 📂 Project Structure
 
 ```bash
 City-Home-Mapper/
 │
-├── src/                  # Source code
-├── public/               # Public assets
-├── components/           # Reusable UI components
-├── pages/                # Application pages
-├── assets/               # Images and static resources
-├── package.json          # Project dependencies
-├── README.md             # Project documentation
-└── ...
+├── artifacts/
+│   ├── pricewise-homes/       # Main frontend application
+│   ├── api-server/            # API server configuration
+│   └── mockup-sandbox/        # UI testing sandbox
+│
+├── lib/                       # Shared libraries
+├── scripts/                   # Utility scripts
+├── attached_assets/           # Project assets
+├── package.json               # Root dependencies
+├── pnpm-workspace.yaml        # Workspace configuration
+├── tsconfig.json              # TypeScript configuration
+└── README.md                  # Documentation
 ```
 
 ---
 
-## ⚙️ Installation & Setup
+# ⚙️ Installation & Setup
 
-### 1. Clone the Repository
+## 1️⃣ Clone the Repository
 
 ```bash
 git clone https://github.com/Uttakarshin/city-home-mapper-.git
 ```
 
-### 2. Navigate to Project Folder
+## 2️⃣ Navigate to Project Folder
 
 ```bash
 cd city-home-mapper-
 ```
 
-### 3. Install Dependencies
+## 3️⃣ Install Dependencies
+
+> This project uses **pnpm**.
+
+Install pnpm globally if not installed:
 
 ```bash
-npm install
+npm install -g pnpm
 ```
 
-### 4. Run the Development Server
+Install project dependencies:
 
 ```bash
-npm run dev
+pnpm install
+```
+
+## 4️⃣ Start Development Server
+
+```bash
+pnpm run dev
 ```
 
 ---
 
-## 🌐 Deployment
+# 📦 Build Project
 
-The project can be deployed using:
+To create a production build:
+
+```bash
+pnpm run build
+```
+
+---
+
+# 🌐 Deployment
+
+The project can be deployed on:
 
 * Vercel
 * Netlify
 * Render
+* Replit
 * GitHub Pages
 
 ---
 
-## 📸 Screenshots
+# 📸 Screenshots
 
 Add project screenshots here.
 
@@ -113,40 +192,45 @@ Add project screenshots here.
 
 ---
 
-## 🔮 Future Enhancements
+# 🔮 Future Enhancements
 
-* AI-based property recommendations
-* User authentication system
-* Real-time property updates
-* Advanced analytics dashboard
-* Cloud database integration
-* Mobile application support
+* 🤖 AI-powered property recommendation system
+* 🔐 Authentication & authorization
+* ☁️ Cloud database integration
+* 📱 Mobile application support
+* 🧠 Predictive property analytics
+* 📍 Real-time map intelligence
+* 🏘️ Advanced property filtering
+* 💬 AI chatbot assistant for property queries
 
 ---
 
-## 🤝 Contributing
+# 🤝 Contributing
 
 Contributions are welcome.
 
+## Steps to Contribute
+
 1. Fork the repository
-2. Create a new branch
+2. Create a feature branch
 3. Commit your changes
 4. Push the branch
-5. Create a Pull Request
+5. Open a Pull Request
 
 ---
 
-## 📜 License
+# 📜 License
 
-This project is developed for educational and learning purposes.
+This project is licensed under the MIT License.
 
 ---
 
-## 👨‍💻 Developer
+# 👨‍💻 Developer
 
 Developed by **Uttakarshin**
 
 GitHub: [https://github.com/Uttakarshin](https://github.com/Uttakarshin)
+
 
 ##Acess link
 Project link :https://city-home-mapper--uttakarshinimi1.replit.app/
